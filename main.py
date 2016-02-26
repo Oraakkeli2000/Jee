@@ -1,10 +1,13 @@
+# coding=utf-8
 import os
 import pygame
 
 pygame.init()
 
+# Pygame -ikkunan koko
 window_size = (640, 480)
 
+# Luodaan ikkuna.
 screen = pygame.display.set_mode(window_size)
 
 clock = pygame.time.Clock()
@@ -21,56 +24,39 @@ class Ruutu:
         self.tausta.fill((255, 255, 255))
         self.teksti_pinta = pygame.Surface(ruudun_koko)
 
-    def set_tausta(self, tausta):
-        self.tausta = tausta
-
-    def get_tausta(self):
-        return self.tausta
-
-    def set_teksti(self, teksti):
-        teksti = teksti
-        self.teksti = teksti
-
-    def get_teksti(self):
-        return self.teksti
-
-    def set_teksti_pinta(self, teksti_pinta_ja_sijainti):
-        teksti_pinta, sijainti = teksti_pinta_ja_sijainti
-        self.teksti_pinta = teksti_pinta
-        self.teksti_sijainti = sijainti
-
-    def get_teksti_pinta(self):
-        return self.teksti_pinta, self.teksti_sijainti
-
 
 class Pen:
     def __init__(self):
         pass
 
-    def draw(self, screen, teksti, teksti_pinta_ja_sijainti, tausta):
-        teksti_pinta = teksti_pinta_ja_sijainti[0]
-        teksti_sijainti = teksti_pinta_ja_sijainti[1]
+    def draw(self, screen, teksti_pinta, teksti_sijainti, tausta):
         screen.blit(tausta, (0, 0))
         screen.blit(teksti_pinta, teksti_sijainti)
+
     def render_teksti(self, fontti, teksti, vari=(0, 0, 0)):
         teksti_pinta = fontti.render(teksti, True, (vari))
         return teksti_pinta
 
-
+# Luodaan ruutuobjekti
 ruutu = Ruutu(window_size)
+
+# Fonttimääritykset
 oletus_fontti = pygame.font.get_default_font()
 fontti = pygame.font.Font(oletus_fontti, 22)
 
-punainen = (255, 0 , 0)
+punainen = (255, 0, 0)
 
 pen = Pen()
 
-kuvien_tiedostonimet = {"eka": "Eka.png", "koti": "Koti.png"}
+kuvien_tiedostonimet = {"eka": "Eka.png",
+                        "koti": "Koti.png"}
 kuvat = {}
 
-ruutu.set_teksti("jee")
-ruutu.set_teksti_pinta((pen.render_teksti(fontti, ruutu.get_teksti(), punainen), (250, 250)))
+ruutu.teksti = "jee"
+ruutu.teksti_pinta = pen.render_teksti(fontti, ruutu.teksti, punainen)
+ruutu.teksti_sijainti = (250, 250)
 
+# --------------------------------------------------------
 print kuvien_tiedostonimet.items()
 
 for avain, arvo in kuvien_tiedostonimet.items():
@@ -80,7 +66,9 @@ for avain, arvo in kuvien_tiedostonimet.items():
 
 print kuvat
 
-ruutu.set_tausta(kuvat["eka"])
+# --------------------------------------------------------
+
+ruutu.tausta = kuvat["eka"]
 
 while True:
 
@@ -93,8 +81,8 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 exit()
             elif event.key == pygame.K_RETURN:
-                ruutu.set_tausta(kuvat["koti"])
+                ruutu.tausta = kuvat["koti"]
 
-    pen.draw(screen, ruutu.get_teksti(), ruutu.get_teksti_pinta(), ruutu.get_tausta())
+    pen.draw(screen, ruutu.teksti_pinta, ruutu.teksti_sijainti, ruutu.tausta)
 
     pygame.display.flip()
